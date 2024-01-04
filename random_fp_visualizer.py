@@ -13,9 +13,10 @@ import numpy
 
 
 class IEEEFormat:
-    def __init__(self, mantWidth, expWidth):
+    def __init__(self, mantWidth, expWidth, prefixLabel="FP"):
         self.mantWidth = mantWidth
         self.expWidth = expWidth
+        self.prefixLabel = prefixLabel
 
     def parseValue(self, line, post_process=(lambda e, s: (e, s))):
       value = int(line, 16)
@@ -27,7 +28,7 @@ class IEEEFormat:
 
     @property
     def name(self):
-        return f"FP{self.mantWidth + self.expWidth + 1}"
+        return f"{self.prefixLabel}{self.mantWidth + self.expWidth + 1}"
 
 
 class Discard:
@@ -42,7 +43,7 @@ def parseFmtList(fmtDesc):
         "FP64": IEEEFormat(52, 11),
         "FP32": IEEEFormat(23, 8),
         "FP16": IEEEFormat(10, 5),
-        "BF16": IEEEFormat(7, 8),
+        "BF16": IEEEFormat(7, 8, "BF"),
         "-": Discard
     }
     return [FORMAT_MAP[fmt] for fmt in fmtDesc.split(" ")]
